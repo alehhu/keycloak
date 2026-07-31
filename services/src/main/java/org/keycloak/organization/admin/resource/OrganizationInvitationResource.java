@@ -204,7 +204,16 @@ public class OrganizationInvitationResource {
                 .resourcePath(session.getContext().getUri())
                 .success();
 
-        return Response.noContent().build();
+        java.net.URI location = session.getContext().getUri().getBaseUriBuilder()
+                .path("admin/realms")
+                .path(realm.getName())
+                .path("organizations")
+                .path(organization.getId())
+                .path("invitations")
+                .path(invitation.getId())
+                .build();
+
+        return Response.created(location).build();
     }
 
     private int getActionTokenLifespan() {
@@ -343,7 +352,7 @@ public class OrganizationInvitationResource {
     @Path("/{id}/resend")
     @Operation(summary = "Resend an invitation")
     @APIResponses(value = {
-        @APIResponse(responseCode = "204", description = "No Content"),
+        @APIResponse(responseCode = "201", description = "Created"),
         @APIResponse(responseCode = "403", description = "Forbidden"),
         @APIResponse(responseCode = "404", description = "Not Found")
     })
